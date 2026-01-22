@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>תיק עבודות | מיכל</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #6f7f73;
+      background-image:
+        linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4)),
+        url('bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #fff;
+    }
+
+    /* ===== Slider ===== */
+    .slider {
+      display: flex;
+      height: 100vh;
+      width: 400vw;
+      transform: translateX(0);
+      transition: transform 0.9s cubic-bezier(.22,.61,.36,1);
+    }
+
+    section {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== Glass Card ===== */
+    .glass {
+      width: 70%;
+      max-width: 900px;
+      min-height: 420px;
+      padding: 60px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(212,175,55,0.5);
+      box-shadow: 0 40px 90px rgba(0,0,0,0.45);
+
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    section.active .glass {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h1 { font-size: 3rem; font-weight: 500; margin-bottom: 20px; }
+    h2 { font-size: 2rem; font-weight: 400; margin-bottom: 30px; }
+    p  { font-size: 1.05rem; line-height: 1.7; color: #eee; max-width: 520px; }
+
+    /* ===== Portfolio ===== */
+    .portfolio-section {
+      width: 70%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .portfolio-header {
+      font-size: 1rem;
+      letter-spacing: 0.25em;
+      padding: 10px 18px;
+      border-radius: 40px;
+      border: 1px solid rgba(212,175,55,0.6);
+      background: rgba(255,255,255,0.08);
+      text-align: center;
+    }
+
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .work {
+      height: 160px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.25);
+    }
+
+    .work:hover {
+      transform: translateY(-6px);
+      background: rgba(255,255,255,0.20);
+    }
+
+    /* ===== Gallery Overlay ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .overlay.open {
+      display: flex;
+      animation: fadeIn 0.25s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .gallery {
+      width: min(1100px, 90vw);
+      border-radius: 28px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(212,175,55,0.55);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.55);
+      overflow: hidden;
+      transform: scale(0.9);
+      opacity: 0;
+      animation: popIn 0.35s ease forwards;
+    }
+
+    @keyframes popIn {
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .gallery-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .gallery-title {
+      font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+
+    .close-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,175,55,0.7);
+      background: rgba(255,255,255,0.10);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .close-btn:hover { transform: scale(1.06); background: rgba(255,255,255,0.16); }
+
+    .gallery-body {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      min-height: 420px;
+    }
+
+    .main-img {
+      position: relative;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .main-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .main-img:hover img {
+      transform: scale(1.05);
+    }
+
+    .thumbs {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .thumb {
+      height: 90px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.15);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb.active {
+      border-color: rgba(212,175,55,0.9);
+      transform: translateX(6px);
+    }
+
+    .nav-controls {
+      position: absolute;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0 14px;
+      pointer-events: none;
+    }
+
+    .nav-btn {
+      pointer-events: all;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,175,55,0.75);
+      background: rgba(255,255,255,0.10);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .nav-btn:hover { transform: scale(1.06); background: rgba(255,255,255,0.16); }
+
+    /* ===== Dots ===== */
+    .nav {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 14px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,175,55,0.8);
+      opacity: 0.5;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: rgba(212,175,55,0.9);
+      opacity: 1;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .glass { width: 90%; padding: 40px; }
+      .works-grid { grid-template-columns: 1fr; }
+      .gallery-body { grid-template-columns: 1fr; }
+      .thumbs { flex-direction: row; overflow-x: auto; overflow-y: hidden; }
+      .thumb { width: 140px; height: 90px; flex: 0 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+  <section class="active">
+    <div class="glass">
+      <h1>מיכל</h1>
+      <p>תיק עבודות בעיצוב נקי, רגוע ויוקרתי.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="portfolio-section">
+      <div class="portfolio-header">פרוטפוליו</div>
+      <div class="works-grid">
+        <div class="work" data-type="branding">מיתוג עסקים ואירועים</div>
+        <div class="work" data-type="invites">הזמנות לאירועים</div>
+        <div class="work" data-type="books">עטיפות לספרים</div>
+        <div class="work" data-type="sites">אתרי תדמית</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="glass">
+      <h2>אודות</h2>
+      <p>מעצבת גרפית עם חיבור חזק לאסתטיקה, מבנה ודיוק.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="glass">
+      <h2>יצירת קשר</h2>
+      <p>מוזמנת לפנות לפרויקטים ושיתופי פעולה.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <div class="dot active" onclick="goTo(0)"></div>
+  <div class="dot" onclick="goTo(1)"></div>
+  <div class="dot" onclick="goTo(2)"></div>
+  <div class="dot" onclick="goTo(3)"></div>
+</div>
+
+<!-- Gallery Overlay -->
+<div class="overlay" id="overlay">
+  <div class="gallery" id="gallery">
+    <div class="gallery-top">
+      <div class="gallery-title" id="galleryTitle">גלריה</div>
+      <button class="close-btn" id="closeBtn">×</button>
+    </div>
+
+    <div class="gallery-body">
+      <div class="main-img" id="mainImgWrap">
+        <img id="mainImg" src="" alt="" />
+        <div class="nav-controls">
+          <button class="nav-btn" id="prevBtn">‹</button>
+          <button class="nav-btn" id="nextBtn">›</button>
+        </div>
+      </div>
+
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const slider = document.getElementById('slider');
+  const sections = document.querySelectorAll('section');
+  const dots = document.querySelectorAll('.dot');
+  let current = 0;
+  let locked = false;
+
+  function update() {
+    slider.style.transform = `translateX(${current * 100}vw)`;
+    sections.forEach((s,i)=>s.classList.toggle('active', i===current));
+    dots.forEach((d,i)=>d.classList.toggle('active', i===current));
+  }
+
+  function goTo(i) {
+    if (i < 0 || i >= sections.length) return;
+    current = i;
+    update();
+  }
+
+  window.addEventListener('wheel', e => {
+    if (locked) return;
+    locked = true;
+    if (e.deltaY > 0) goTo(current + 1);
+    else goTo(current - 1);
+    setTimeout(()=> locked = false, 1100);
+  }, { passive: true });
+
+  update();
+
+  // ===== Gallery logic =====
+  const works = document.querySelectorAll('.work');
+  const overlay = document.getElementById('overlay');
+  const galleryTitle = document.getElementById('galleryTitle');
+  const mainImg = document.getElementById('mainImg');
+  const thumbs = document.getElementById('thumbs');
+  const closeBtn = document.getElementById('closeBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  const galleryData = {
+    branding: {
+      title: 'מיתוג עסקים ואירועים',
+      images: ['img/branding1.jpg','img/branding2.jpg','img/branding3.jpg']
+    },
+    invites: {
+      title: 'הזמנות לאירועים',
+      images: ['img/invites1.jpg','img/invites2.jpg','img/invites3.jpg']
+    },
+    books: {
+      title: 'עטיפות לספרים',
+      images: ['img/books1.jpg','img/books2.jpg','img/books3.jpg']
+    },
+    sites: {
+      title: 'אתרי תדמית',
+      images: ['img/sites1.jpg','img/sites2.jpg','img/sites3.jpg']
+    }
+  };
+
+  let activeGallery = null;
+  let activeIndex = 0;
+
+  function openGallery(type) {
+    activeGallery = galleryData[type];
+    galleryTitle.textContent = activeGallery.title;
+    activeIndex = 0;
+
+    renderGallery();
+    overlay.classList.add('open');
+  }
+
+  function closeGallery() {
+    overlay.classList.remove('open');
+  }
+
+  function renderGallery() {
+    mainImg.src = activeGallery.images[activeIndex];
+    thumbs.innerHTML = '';
+
+    activeGallery.images.forEach((src, i) => {
+      const t = document.createElement('div');
+      t.className = 'thumb' + (i === activeIndex ? ' active' : '');
+      t.innerHTML = `<img src="${src}" alt="" />`;
+      t.addEventListener('click', () => {
+        activeIndex = i;
+        renderGallery();
+      });
+      thumbs.appendChild(t);
+    });
+  }
+
+  works.forEach(w => {
+    w.addEventListener('click', () => {
+      openGallery(w.dataset.type);
+    });
+  });
+
+  closeBtn.addEventListener('click', closeGallery);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeGallery();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    activeIndex = (activeIndex - 1 + activeGallery.images.length) % activeGallery.images.length;
+    renderGallery();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    activeIndex = (activeIndex + 1) % activeGallery.images.length;
+    renderGallery();
+  });
+</script>
+
+</body>
+</html>
