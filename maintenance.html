@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>  MICHAL | graphic designer</title>
+
+<link rel="icon" type="image/png" href="LOGOMICON.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'Inter',sans-serif;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:#6f7f73;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.6)),
+    url('bg.jpg');
+  background-size:cover;
+  background-position:center;
+  color:#fff;
+}
+
+/* ===== Blueprint Grid Background ===== */
+body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(rgba(212,175,55,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,175,55,0.05) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation: gridMove 30s linear infinite;
+}
+
+@keyframes gridMove{
+  from{background-position:0 0}
+  to{background-position:60px 60px}
+}
+
+/* ===== Glass Card ===== */
+.glass{
+  position:relative;
+  width:90%;
+  max-width:760px;
+  padding:70px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.10);
+  backdrop-filter:blur(20px);
+  box-shadow:0 50px 120px rgba(0,0,0,0.6);
+  text-align:center;
+  overflow:hidden;
+}
+
+/* ===== Animated Construction Frame ===== */
+.glass::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:30px;
+  border:2px solid rgba(212,175,55,0.8);
+  clip-path:inset(0 100% 100% 0);
+  animation: buildFrame 4s linear infinite;
+}
+
+@keyframes buildFrame{
+  0%{clip-path:inset(0 100% 100% 0)}
+  25%{clip-path:inset(0 0 100% 0)}
+  50%{clip-path:inset(0 0 0 0)}
+  75%{clip-path:inset(100% 0 0 0)}
+  100%{clip-path:inset(0 100% 100% 0)}
+}
+
+/* ===== Warning Stripe ===== */
+.stripe{
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:200%;
+  height:6px;
+  background:repeating-linear-gradient(
+    45deg,
+    #91804b,
+    #91804b 15px,
+    transparent 15px,
+    transparent 30px
+  );
+  animation: stripeMove 4s linear infinite;
+}
+
+@keyframes stripeMove{
+  from{transform:translateX(0)}
+  to{transform:translateX(50%)}
+}
+
+.logo{
+  max-width:200px;
+  margin-bottom:30px;
+  opacity:0.95;
+}
+
+h1{
+  font-weight:400;
+  margin-bottom:15px;
+  font-size:2.2rem;
+  letter-spacing:0.05em;
+}
+
+p{
+  opacity:0.9;
+  margin-bottom:40px;
+  line-height:1.7;
+}
+
+/* ===== Rising Lines (construction feel) ===== */
+.lines{
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+.lines span{
+  position:absolute;
+  bottom:-100%;
+  width:2px;
+  background:rgba(212,175,55,0.3);
+  animation: rise 6s linear infinite;
+}
+
+.lines span:nth-child(1){left:20%;animation-delay:0s}
+.lines span:nth-child(2){left:40%;animation-delay:1s}
+.lines span:nth-child(3){left:60%;animation-delay:2s}
+.lines span:nth-child(4){left:80%;animation-delay:3s}
+
+@keyframes rise{
+  from{bottom:-100%}
+  to{bottom:100%}
+}
+
+/* ===== Button ===== */
+.update-btn{
+  cursor:pointer;
+  display:inline-block;
+  padding:14px 34px;
+  border-radius:40px;
+  border:1px solid rgba(212,175,55,0.8);
+  background:rgba(255,255,255,0.08);
+  transition:0.3s;
+}
+.update-btn:hover{
+  background:rgba(212,175,55,0.2);
+}
+
+/* ===== Form ===== */
+.form-wrap{
+  margin-top:30px;
+  opacity:0;
+  max-height:0;
+  overflow:hidden;
+  transition:0.6s ease;
+}
+.form-wrap.active{
+  opacity:1;
+  max-height:220px;
+}
+
+input{
+  width:80%;
+  padding:14px;
+  border-radius:30px;
+  border:none;
+  margin-bottom:12px;
+  outline:none;
+  text-align:center;
+}
+
+.send-btn{
+  padding:12px 28px;
+  border:none;
+  border-radius:30px;
+  background:#91804b;
+  cursor:pointer;
+}
+.success{
+  margin-top:15px;
+  color:#91804b;
+  font-size:0.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="glass">
+
+  <div class="stripe"></div>
+
+  <div class="lines">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <img src="LOGO MICHAL1.png" class="logo">
+
+  <h1>האתר שלנו בשיפוצים</h1>
+  <p>אנחנו בונים חוויה נעימה ומדויקת יותר. נשוב בקרוב.</p>
+
+  <div class="update-btn" onclick="openForm()">רוצים שנעדכן אתכם? לחצו כאן</div>
+
+  <div class="form-wrap" id="formWrap">
+    <input type="email" id="email" placeholder="הכניסו כתובת מייל">
+    <br>
+    <button class="send-btn" onclick="sendMail()">שליחה</button>
+    <div class="success" id="successMsg"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  emailjs.init("q28V-Vc0Rbl80gz16");
+})();
+
+function openForm(){
+  document.getElementById('formWrap').classList.toggle('active');
+}
+
+function sendMail(){
+  const email=document.getElementById('email').value;
+  if(!email){alert("נא להזין כתובת מייל");return;}
+
+  emailjs.send("service_utdzu1b","template_0fhvpja",{user_email:email})
+  .then(function(){
+    document.getElementById('successMsg').innerText="תודה! נעדכן אותך בקרוב.";
+  },function(){
+    alert("אירעה שגיאה.");
+  });
+}
+</script>
+
+</body>
+</html>
